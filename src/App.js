@@ -7,6 +7,7 @@ import Order from './Order';
 import OrderHistory from './OrderHistory';
 import * as yup from 'yup'
 import FormSchema from './FormSchema';
+import axios from 'axios';
 
 const AppContainer = styled.div`
   margin: 0;
@@ -65,6 +66,18 @@ const [disabled, setDisabled] = useState(initialDisabled);
 // Function to post a new order to API, appending returned data to setOrderHistory
 // For now this application will render orderHistory directly without use of API
 
+const postOrder = newOrder => {
+  axios.post('https:reqres.in/api/users', newOrder)
+    .then(success => {
+      console.log(success)
+      setOrderHistory([success.data, ...orderHistory]);
+      setForms(initialForms)
+    })
+    .catch(error => {
+      debugger
+    })
+}
+
 //////////////////// FORM ACTIONS ////////////////////
 const inputChange = (name, value) => {//=======================================> NEEDS WORK, YUP
 yup
@@ -108,7 +121,7 @@ const newOrder = {
   toppings: Object.keys(forms.toppings).filter(x => forms.toppings[x]),
   specialInstructions: forms.specialInstructions.trim(),//============================> NEEDS WORK, DEPENDING ON FORM
 }
-setOrderHistory([newOrder, ...orderHistory]);
+postOrder(newOrder);
 setForms(initialForms)
 }
 
